@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        style = "@style/WonderText.Title"
+        android:id="@+id/theme_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="CHOIX DU THEME" />
+
+    <Button
+        android:id="@+id/theme_bt_normal"
+        style="@style/WonderButton"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="NORMAL" />
+
+    <Button
+        android:id="@+id/theme_bt_dark"
+        style="@style/WonderButton"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="DARK" />
+
+    <Button
+        android:id="@+id/theme_bt_retour"
+        style="@style/WonderButtonQuitter"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="RETOUR" />
+</LinearLayout>

@@ -1,11 +1,72 @@
 <resources>
 
+
+
+    <!-- | STYLES | -->
+
+    <!-- TEXT VIEW -->
+    <style name="WonderText" parent="@style/TextAppearance.AppCompat">
+        <item name="android:padding">@dimen/padding_normal</item>
+        <item name="android:textColor">@color/Jaune</item>
+        <item name="android:layout_marginTop">@dimen/margin_huge</item>
+        <item name="android:layout_marginBottom">@dimen/margin_normal</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="WonderText.Title">
+        <item name ="android:gravity">center_horizontal</item>
+        <item name ="android:layout_gravity">center_horizontal</item>
+        <item name="android:textSize">@dimen/text_title</item>
+        <item name="android:padding">@dimen/padding_normal</item>
+        <item name="android:textColor">@color/Jaune</item>
+        <item name="android:layout_marginTop">@dimen/margin_huge</item>
+        <item name="android:fontFamily">casual</item>
+
+
+    </style>
+
+    <!-- BUTTON -->
+    <style name="WonderButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:textColor">@color/background_light</item>
+        <item name="android:background">@color/Jaune</item>
+        <item name="colorButtonNormal">@color/Jaune</item>
+        <item name="android:textSize">@dimen/bt_text_size</item>
+        <item name="android:layout_margin">@dimen/margin_normal</item>
+        <item name="android:backgroundTint">@color/Jaune</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_width">150dp</item>
+        <item name="android:layout_height">50dp</item>
+    </style>
+
+    <style name="WonderButtonQuitter" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:textColor">@color/background_light</item>
+        <item name="android:background">@color/Jaune</item>
+        <item name="colorButtonNormal">@color/Jaune</item>
+        <item name="android:textSize">@dimen/bt_text_size</item>
+        <item name="android:layout_margin">@dimen/margin_normal</item>
+        <item name="android:backgroundTint">@color/colorAccent</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_width">150dp</item>
+        <item name="android:layout_height">50dp</item>
+    </style>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <style name="Wonder" parent="Theme.AppCompat.Light.DarkActionBar">
+
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:textViewStyle">@style/WonderText</item>
+        <item name="android:buttonStyle">@style/WonderButton</item>
     </style>
 
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:textViewStyle">@style/WonderText</item>
+        <item name="android:buttonStyle">@style/WonderButton</item>
+    </style>
 </resources>

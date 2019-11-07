@@ -5,4 +5,51 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"/>
+    android:layout_gravity="center"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="260dp"
+        tools:layout_editor_absoluteY="298dp">
+
+        <TextView
+            android:id="@+id/Main_titreMemoria"
+            style="@style/WonderText.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="Memoria" />
+
+        <Button
+            android:id="@+id/main_bt_jouer"
+            style="@style/WonderButton"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="JOUER" />
+
+        <Button
+            android:id="@+id/main_bt_options"
+            style="@style/WonderButton"
+            android:text="OPTIONS"
+            android:layout_gravity="center"
+            android:gravity="center"/>
+
+        <Button
+            android:id="@+id/main_bt_scores"
+            style="@style/WonderButton"
+            android:text="SCORES"
+            android:layout_gravity="center"
+            android:gravity="center"/>
+
+        <Button
+            android:id="@+id/main_bt_quitter"
+            style="@style/WonderButtonQuitter"
+            android:text="QUITTER"
+            android:layout_gravity="center"
+            android:gravity="center"/>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
