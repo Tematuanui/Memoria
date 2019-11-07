@@ -77,15 +77,16 @@ final Context context = this;
      bt_retour.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            MainActivity.this.finish();
+            bip.start();
+            OptionsActivity.this.finish();
         }
     });
-    public void setStyle (){
+    /*public void setStyle (){
 final Button bt = (Button) findViewById(R.id.options_bt_audio);
 
 final Button b1 = new Button(new ContextThemeWrapper(OptionsActivity.this,R.style.WonderButton));
         }
-    }
+    }*/
 
-}
+}}
 

@@ -58,6 +58,7 @@ MediaPlayer miiSong;
         bt_quitter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                miiSong.stop();
                 MainActivity.this.finish();
             }
         });
