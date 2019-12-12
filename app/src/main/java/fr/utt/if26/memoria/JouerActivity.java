@@ -3,6 +3,7 @@ package fr.utt.if26.memoria;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -46,8 +47,8 @@ public class JouerActivity extends AppCompatActivity {
 
     public void initTable() {
 
-        int tableWidth = 5;
-        int tableHeight = 5;
+        int tableWidth = 3;
+        int tableHeight = 4;
 
         this.chrono.start();
 
@@ -138,6 +139,14 @@ public class JouerActivity extends AppCompatActivity {
                     this.visibleCard = null;
 
                     this.changeScore(100);
+
+                    int count=0;
+                    for( Carte card : this.deck )
+                        if( !card.isLocked() )
+                            count++;
+
+                    if( count <= 1 )
+                        this.endOfGame();
                 }
             } else {
                 this.visibleCard = c;
@@ -146,6 +155,10 @@ public class JouerActivity extends AppCompatActivity {
     }
 
 
+    public void endOfGame() {
+        Intent itt_leaderboard = new Intent(this, LeaderboardActivity.class);
+        startActivity( itt_leaderboard );
+    }
 
     class ImageAdapterGridView extends BaseAdapter {
         private Context mContext;
