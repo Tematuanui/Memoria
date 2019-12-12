@@ -13,9 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Chronometer;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,13 +28,46 @@ public class JouerActivity extends AppCompatActivity {
     private Carte[] deck;
     private Carte visibleCard;
     private boolean gameIsPaused;
+    private Chronometer chrono;
+    private int score;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jouer);
 
+        this.score = 0;
+        this.chrono = findViewById(R.id.timeChrono);
+        this.visibleCard = null;
+        this.gameIsPaused = false;
+
         this.initTable();
+    }
+
+    public void initTable() {
+
+        int tableWidth = 5;
+        int tableHeight = 5;
+
+        this.chrono.start();
+
+        this.deck = this.initDeck(tableWidth * tableHeight);
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int screenHeight = displayMetrics.heightPixels;
+        int screenWidth = displayMetrics.widthPixels;
+
+        this.gameTable = findViewById(R.id.gameTable);
+        gameTable.setAdapter(new ImageAdapterGridView(this, tableWidth, tableHeight, deck));
+        gameTable.setColumnWidth(screenWidth/tableWidth);
+
+        gameTable.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent,
+                                    View v, int position, long id) {
+                returnCard(position);
+            }
+        });
     }
 
     public Carte[] initDeck(int nbCartes) {
@@ -56,33 +90,17 @@ public class JouerActivity extends AppCompatActivity {
         return c;
     }
 
-    public void initTable(){
+    public void changeScore(int delta) {
+        TextView scoreView = findViewById(R.id.scoreValue);
 
-        int tableWidth = 5;
-        int tableHeight = 5;
+        this.score += delta;
 
-        this.deck = this.initDeck(tableWidth * tableHeight);
-        this.visibleCard = null;
-        this.gameIsPaused = false;
+        if( this.score < 0 ) this.score = 0;
 
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int screenHeight = displayMetrics.heightPixels;
-        int screenWidth = displayMetrics.widthPixels;
-
-        this.gameTable = findViewById(R.id.gameTable);
-        gameTable.setAdapter(new ImageAdapterGridView(this, tableWidth, tableHeight, deck));
-        gameTable.setColumnWidth(screenWidth/tableWidth);
-
-        gameTable.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent,
-                                    View v, int position, long id) {
-                returnCard((ImageView)v, position);
-            }
-        });
+        scoreView.setText(this.score + "");
     }
 
-    public void returnCard(ImageView iv, int position) {
+    public void returnCard(int position) {
         final Carte c = this.deck[position];
         
         if( c.isLocked() || c == this.visibleCard || this.gameIsPaused )
@@ -91,8 +109,14 @@ public class JouerActivity extends AppCompatActivity {
         c.returnCard();
 
         if( c.isVisible() ) {
+            // Just to make sure that the card we just returned is visible
+            
             if( this.visibleCard != null ) {
+                // there is another returned card, we need to test if it's a match
+
                 if( !c.isSameAs(this.visibleCard) ) {
+                    // Not the same card, we wait and return them again
+                    this.changeScore(-10);
 
                     this.gameIsPaused = true;
 
@@ -107,9 +131,13 @@ public class JouerActivity extends AppCompatActivity {
                     }, 500);
 
                 } else {
+                    // Yay, same cards, we keep them visible and lock them
+                    
                     this.visibleCard.lock();
                     c.lock();
                     this.visibleCard = null;
+
+                    this.changeScore(100);
                 }
             } else {
                 this.visibleCard = c;
