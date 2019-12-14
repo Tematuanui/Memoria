@@ -1,5 +1,6 @@
 package fr.utt.if26.memoria;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -8,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -24,6 +26,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class JouerActivity extends AppCompatActivity {
+
+    public static final int CONTINUE_REQUEST = 0;
+
+    public static final int BACK_TO_MENU_RESULT = 0;
+    public static final int PLAY_AGAIN_RESULT = 1;
 
     private GridView gameTable;
     private Carte[] deck;
@@ -47,8 +54,13 @@ public class JouerActivity extends AppCompatActivity {
 
     public void initTable() {
 
-        int tableWidth = 3;
-        int tableHeight = 4;
+        int tableWidth = 4;
+        int tableHeight = 5;
+
+        // set score at 0
+        this.changeScore(-this.score);
+        // reset chrono
+        this.chrono.setBase(SystemClock.elapsedRealtime());
 
         this.chrono.start();
 
@@ -156,8 +168,28 @@ public class JouerActivity extends AppCompatActivity {
 
 
     public void endOfGame() {
+        int time = (int) ((SystemClock.elapsedRealtime() - this.chrono.getBase()) / 1000);
+
         Intent itt_leaderboard = new Intent(this, LeaderboardActivity.class);
-        startActivity( itt_leaderboard );
+        itt_leaderboard.putExtra("time", String.valueOf(time));
+        itt_leaderboard.putExtra("score", String.valueOf(this.score));
+        startActivityForResult(itt_leaderboard, 0);
+
+        // finish();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode != JouerActivity.CONTINUE_REQUEST) return;
+
+        switch( resultCode ) {
+            case JouerActivity.PLAY_AGAIN_RESULT:
+                this.initTable();
+                break;
+            case JouerActivity.BACK_TO_MENU_RESULT:
+                finish();
+                break;
+        }
     }
 
     class ImageAdapterGridView extends BaseAdapter {
