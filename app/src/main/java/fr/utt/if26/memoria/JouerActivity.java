@@ -54,8 +54,17 @@ public class JouerActivity extends AppCompatActivity {
 
     public void initTable() {
 
-        int tableWidth = 4;
-        int tableHeight = 5;
+        int nbCartes = Option.getInstance(getApplicationContext()).getNbCartes();
+
+        int tableWidth = 3;
+        int tableHeight = 4;
+
+        for( int i=2 ; i<1000 ; i++ ) {
+            if( nbCartes%i == 0 && ( nbCartes/i == i || nbCartes/i == i-1 || nbCartes/i == i+1 )) {
+                tableWidth = nbCartes/i;
+                tableHeight = i;
+            }
+        }
 
         // set score at 0
         this.changeScore(-this.score);

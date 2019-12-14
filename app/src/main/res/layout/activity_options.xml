@@ -28,6 +28,35 @@
             android:gravity="center"
             android:text="AUDIO" />
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/options_bt_lessCards"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="-" />
+
+            <TextView
+                android:id="@+id/options_txt_nbCartes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0"
+                android:textAlignment="center"
+                android:textSize="20dp" />
+
+            <Button
+                android:id="@+id/options_bt_moreCards"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="+" />
+        </LinearLayout>
+
         <Button
             android:id="@+id/options_bt_retour"
             style="@style/WonderButtonQuitter"

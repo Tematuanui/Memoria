@@ -16,7 +16,10 @@ import static android.content.Context.MODE_PRIVATE;
 class Memory {
 
     private static final int MAX_SAVES = 5;
+    public static final int DEFAULT_CARDS_AMOUNT = 12;
+
     private static Memory instance;
+
     private Context context;
 
     private Memory(Context ctx0) {
@@ -188,5 +191,26 @@ class Memory {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString("bestScores", str_bestScores);
         editor.commit();
+    }
+
+    public void setNbCartes(int nbCartes) {
+        SharedPreferences sharedPref = this.context.getSharedPreferences("Options", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("nbCartes", String.valueOf(nbCartes));
+        editor.commit();
+    }
+
+    public int getNbCartes() {
+        SharedPreferences sharedPref = this.context.getSharedPreferences("Options", MODE_PRIVATE);
+        String str_nbCartes = sharedPref.getString("nbCartes", null);
+
+        int nbCartes = 0;
+        try {
+            nbCartes = Integer.parseInt(str_nbCartes);
+        } catch(NumberFormatException e) {
+            nbCartes = Memory.DEFAULT_CARDS_AMOUNT;
+        }
+
+        return nbCartes;
     }
 }

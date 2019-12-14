@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ public class OptionsActivity extends AppCompatActivity {
         final Button bt_theme = (Button)findViewById(R.id.options_bt_theme);
         final Button bt_audio = (Button)findViewById(R.id.options_bt_audio);
         final Button bt_retour = (Button)findViewById(R.id.options_bt_retour);
+
 
         bt_theme.setOnClickListener(new View.OnClickListener() {
 
@@ -79,12 +81,58 @@ public class OptionsActivity extends AppCompatActivity {
                 OptionsActivity.this.finish();
             }
         });
-        /*public void setStyle (){
-          final Button bt = (Button) findViewById(R.id.options_bt_audio);
 
-          final Button b1 = new Button(new ContextThemeWrapper(OptionsActivity.this,R.style.WonderButton));
-        }
-        }*/
 
-}}
+
+        final Button bt_moreCards = (Button)findViewById(R.id.options_bt_moreCards);
+        final Button bt_lessCards = (Button)findViewById(R.id.options_bt_lessCards);
+
+        final TextView nbCardsView = (TextView)findViewById(R.id.options_txt_nbCartes);
+        nbCardsView.setText(String.valueOf(Option.getInstance(getApplicationContext()).getNbCartes()));
+
+        bt_moreCards.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bip.start();
+                int currentNbCards = Integer.parseInt(nbCardsView.getText().toString());
+                int newNbCards = currentNbCards;
+
+                Option opt = Option.getInstance(getApplicationContext());
+
+                int[] possibleAmounts = opt.getPossibleCardsAmount();
+                for( int amount : possibleAmounts ) {
+                    if( amount > currentNbCards ){ 
+                        newNbCards = amount;
+                        break;
+                    }
+                }
+
+                opt.setNbCartes(newNbCards);
+                nbCardsView.setText(String.valueOf(newNbCards));
+            }
+        });
+
+        bt_lessCards.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bip.start();
+                int currentNbCards = Integer.parseInt(nbCardsView.getText().toString());
+                int newNbCards = currentNbCards;
+
+                Option opt = Option.getInstance(getApplicationContext());
+
+                int[] possibleAmounts = opt.getPossibleCardsAmount();
+                for( int amount : possibleAmounts ) {
+                    if( amount >= currentNbCards )
+                        break;
+
+                    newNbCards = amount;
+                }
+                
+                opt.setNbCartes(newNbCards);
+                nbCardsView.setText(String.valueOf(newNbCards));
+            }
+        });
+    }
+}
 
