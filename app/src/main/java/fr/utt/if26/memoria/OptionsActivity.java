@@ -7,27 +7,24 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class OptionsActivity extends AppCompatActivity {
-    MediaPlayer bip;
-    final Context context = this;
+
+    private SoundBox soundbox;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
 
-        bip = MediaPlayer.create(getApplicationContext(),R.raw.bip);
-
+        this.soundbox = SoundBox.getInstance(getApplicationContext());
 
         final Button bt_theme = (Button)findViewById(R.id.options_bt_theme);
-        final Button bt_audio = (Button)findViewById(R.id.options_bt_audio);
+        final Button bt_music = (Button)findViewById(R.id.options_bt_music);
+        final Button bt_sounds = (Button)findViewById(R.id.options_bt_sounds);
         final Button bt_retour = (Button)findViewById(R.id.options_bt_retour);
 
 
@@ -35,8 +32,8 @@ public class OptionsActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View arg0) {
-                bip.start();
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                soundbox.bip();
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(OptionsActivity.this);
 
                 alertDialogBuilder.setTitle("CHOIX DE THEME");
 
@@ -47,13 +44,13 @@ public class OptionsActivity extends AppCompatActivity {
                     .setPositiveButton("NORMAL", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int id) {
-                            bip.start();
+                            soundbox.bip();
                         }
                     })
 
                 .setPositiveButton("DARK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        bip.start();
+                        soundbox.bip();
 
                     }
                 })
@@ -61,7 +58,7 @@ public class OptionsActivity extends AppCompatActivity {
 
                 .setNeutralButton("RETOUR", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        bip.start();
+                        soundbox.bip();
                         dialog.cancel();
 
                     }
@@ -77,7 +74,7 @@ public class OptionsActivity extends AppCompatActivity {
         bt_retour.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bip.start();
+                soundbox.bip();
                 OptionsActivity.this.finish();
             }
         });
@@ -93,7 +90,7 @@ public class OptionsActivity extends AppCompatActivity {
         bt_moreCards.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bip.start();
+                soundbox.bip();
                 int currentNbCards = Integer.parseInt(nbCardsView.getText().toString());
                 int newNbCards = currentNbCards;
 
@@ -115,7 +112,7 @@ public class OptionsActivity extends AppCompatActivity {
         bt_lessCards.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bip.start();
+                soundbox.bip();
                 int currentNbCards = Integer.parseInt(nbCardsView.getText().toString());
                 int newNbCards = currentNbCards;
 
@@ -133,6 +130,63 @@ public class OptionsActivity extends AppCompatActivity {
                 nbCardsView.setText(String.valueOf(newNbCards));
             }
         });
+
+
+        //
+        // restauring options from saves
+        //
+        Option opt = Option.getInstance(getApplicationContext());
+        this.toggleSounds(bt_sounds, opt.areSoundsOn());
+        this.toggleMusic(bt_music, opt.isMusicOn());
+
+        bt_music.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleMusic(bt_music);
+                soundbox.bip();
+            }
+        });
+        bt_sounds.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleSounds(bt_sounds);
+                soundbox.bip();
+            }
+        });
+    }
+
+    public void toggleSounds(Button bt_sounds) {
+        String txt = bt_sounds.getText().toString();
+        this.toggleSounds(bt_sounds, txt.toLowerCase().contains("off") );
+    }
+    public void toggleSounds(Button bt_sounds, boolean flag) {
+        String txt = bt_sounds.getText().toString();
+        Option opt = Option.getInstance(getApplicationContext());
+        opt.toggleSounds(flag);
+        if( flag ) {
+            soundbox.toggleSounds(true);
+            bt_sounds.setText( txt.replace("off", "on").replace("OFF", "ON") );
+        } else {
+            soundbox.toggleSounds(false);
+            bt_sounds.setText( txt.replace("on", "off").replace("ON", "OFF") );
+        }
+    }
+
+    public void toggleMusic(Button bt_music) {
+        String txt = bt_music.getText().toString();
+        this.toggleMusic(bt_music, txt.toLowerCase().contains("off") );
+    }
+    public void toggleMusic(Button bt_music, boolean flag) {
+        String txt = bt_music.getText().toString();
+        Option opt = Option.getInstance(getApplicationContext());
+        opt.toggleMusic(flag);
+        if( flag ) {
+            soundbox.startMusic();
+            bt_music.setText( txt.replace("off", "on").replace("OFF", "ON") );
+        } else {
+            soundbox.stopMusic();
+            bt_music.setText( txt.replace("on", "off").replace("ON", "OFF") );
+        }
     }
 }
 

@@ -128,6 +128,8 @@ public class JouerActivity extends AppCompatActivity {
         if( c.isLocked() || c == this.visibleCard || this.gameIsPaused )
             return;
 
+        SoundBox.getInstance(getApplicationContext()).cardFlip();
+
         c.returnCard();
 
         if( c.isVisible() ) {

@@ -1,6 +1,7 @@
 package fr.utt.if26.memoria;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -8,12 +9,20 @@ public class Option {
 
     private static Option instance = null;
 
+    private boolean soundsOn;
+    private boolean musicOn;
     private int nbCartes;
     private Context context;
     
     private Option(Context ctx) {
         this.nbCartes = -1;
         this.context = ctx;
+
+        Memory m = Memory.getInstance(ctx);
+        this.soundsOn = m.areSoundsOn();
+        this.musicOn = m.isMusicOn();
+
+        Log.d("LOG", "Option: LOG");
     }
     
     public static Option getInstance(Context ctx) {
@@ -64,5 +73,25 @@ public class Option {
         }
 
         return intArray;
+    }
+
+    public void toggleSounds(boolean flag) {
+        Memory m = Memory.getInstance(this.context);
+        m.toggleSounds(flag);
+
+        this.soundsOn = flag;
+    }
+    public boolean areSoundsOn() {
+        return this.soundsOn;
+    }
+
+    public void toggleMusic(boolean flag) {
+        Memory m = Memory.getInstance(this.context);
+        m.toggleMusic(flag);
+
+        this.musicOn = flag;
+    }
+    public boolean isMusicOn() {
+        return this.musicOn;
     }
 }

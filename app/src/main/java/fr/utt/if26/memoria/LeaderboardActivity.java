@@ -29,8 +29,16 @@ public class LeaderboardActivity extends AppCompatActivity {
         // Adding score and time to memory ( won't be saved if not in top 5 )
         //
         Memory m = Memory.getInstance( getApplicationContext() );
-        m.addNewTime(Integer.parseInt(currentTime));
-        m.addNewScore(Integer.parseInt(currentScore));
+        if( currentScore != null )
+            m.addNewScore(Integer.parseInt(currentScore));
+        if( currentTime != null )
+            m.addNewTime(Integer.parseInt(currentTime));
+
+        if( currentScore == null && currentTime == null ) {
+            // It means we come from the main menu, we should take off the "play again" button
+            final Button bt_playAgain = (Button)findViewById(R.id.button_replay);
+            bt_playAgain.setVisibility(View.GONE);
+        }
 
 
         //
