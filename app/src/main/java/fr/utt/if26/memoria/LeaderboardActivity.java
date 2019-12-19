@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -12,13 +13,14 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.List;
+
 public class LeaderboardActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leaderboad);
-
 
         Intent intent = getIntent();
 
@@ -29,48 +31,15 @@ public class LeaderboardActivity extends AppCompatActivity {
         // Adding score and time to memory ( won't be saved if not in top 5 )
         //
         Memory m = Memory.getInstance( getApplicationContext() );
-        if( currentScore != null )
-            m.addNewScore(Integer.parseInt(currentScore));
-        if( currentTime != null )
-            m.addNewTime(Integer.parseInt(currentTime));
-
-        if( currentScore == null && currentTime == null ) {
+        if( currentScore != null  && currentTime != null) {
+            this.addScoreAndTimeToDB(Integer.parseInt(currentScore), Integer.parseInt(currentTime));
+        } else {
             // It means we come from the main menu, we should take off the "play again" button
             final Button bt_playAgain = (Button)findViewById(R.id.button_replay);
             bt_playAgain.setVisibility(View.GONE);
         }
 
-
-        //
-        // Displaying best scores...
-        //
-        int[] bs = m.getBestScores();
-        LinearLayout scoresList = (LinearLayout)findViewById(R.id.scoresTable);
-        for( int score : bs ) {
-            TextView tv = new TextView(this.getApplicationContext());
-            tv.setText(String.valueOf(score));
-            tv.setTextColor(Color.parseColor("#eeb912"));
-            tv.setGravity(Gravity.CENTER_HORIZONTAL);
-            tv.setPadding(20,20,20,20);
-
-            scoresList.addView(tv);
-        }
-
-        //
-        // Displaying best times...
-        //
-        int[] bt = m.getBestTimes();
-        LinearLayout timesList = (LinearLayout)findViewById(R.id.timeTable);
-        for( int time : bt ) {
-            TextView tv = new TextView(this.getApplicationContext());
-            tv.setText( this.formatTime(time) );
-            tv.setTextColor(Color.parseColor("#eeb912"));
-            tv.setGravity(Gravity.CENTER_HORIZONTAL);
-            tv.setPadding(20,20,20,20);
-
-            timesList.addView(tv);
-        }
-
+        this.populateLeaderBoard();
 
         //
         // Buttons callbacks
@@ -108,5 +77,105 @@ public class LeaderboardActivity extends AppCompatActivity {
         if( m.length()==1 ) m = "0"+m;
 
         return m+":"+s;
+    }
+
+
+
+    private void populateLeaderBoard() {
+        class GetScores extends AsyncTask<Void, Void, List<ScoreEntity>> {
+            @Override
+            protected List<ScoreEntity> doInBackground(Void... voids) {
+                List<ScoreEntity> allScores = LeaderboardDBClient
+                        .getInstance(getApplicationContext())
+                        .getAppDatabase()
+                        .leaderboardDao()
+                        .getScoresForNumCards(Option.getInstance(getApplicationContext()).getNbCartes());
+                return allScores;
+            }
+            @Override
+            protected void onPostExecute(List<ScoreEntity> scores) {
+                super.onPostExecute(scores);
+                LinearLayout scoresList = (LinearLayout)findViewById(R.id.scoresTable);
+                for( ScoreEntity se : scores ) {
+                    TextView tv = new TextView(getApplicationContext());
+                    tv.setText(String.valueOf(se.getScore()));
+                    tv.setTextColor(Color.parseColor("#eeb912"));
+                    tv.setGravity(Gravity.CENTER_HORIZONTAL);
+                    tv.setPadding(20,20,20,20);
+
+                    scoresList.addView(tv);
+                }
+            }
+        }
+        new GetScores().execute();
+
+        class GetTimes extends AsyncTask<Void, Void, List<TimeEntity>> {
+            @Override
+            protected List<TimeEntity> doInBackground(Void... voids) {
+                List<TimeEntity> allTimes = LeaderboardDBClient
+                        .getInstance(getApplicationContext())
+                        .getAppDatabase()
+                        .leaderboardDao()
+                        .getTimesForNumCards(Option.getInstance(getApplicationContext()).getNbCartes());
+                return allTimes;
+            }
+            @Override
+            protected void onPostExecute(List<TimeEntity> times) {
+                super.onPostExecute(times);
+                LinearLayout timesList = (LinearLayout)findViewById(R.id.timeTable);
+                for( TimeEntity te : times ) {
+                    TextView tv = new TextView(getApplicationContext());
+                    tv.setText( formatTime(te.getTime()) );
+                    tv.setTextColor(Color.parseColor("#eeb912"));
+                    tv.setGravity(Gravity.CENTER_HORIZONTAL);
+                    tv.setPadding(20,20,20,20);
+                    timesList.addView(tv);
+                }
+            }
+        }
+        new GetTimes().execute();
+    }
+
+    private void addScoreAndTimeToDB(final int score, final int time) {
+
+        class AddScores extends AsyncTask<Void, Void, List<ScoreEntity>> {
+            @Override
+            protected List<ScoreEntity> doInBackground(Void... voids) {
+                ScoreEntity se = new ScoreEntity();;
+                se.setScore(score);
+                se.setCardsCount(Option.getInstance(getApplicationContext()).getNbCartes());
+                LeaderboardDBClient
+                        .getInstance(getApplicationContext())
+                        .getAppDatabase()
+                        .leaderboardDao()
+                        .insert(se);
+                return null;
+            }
+            @Override
+            protected void onPostExecute(List<ScoreEntity> scores) {
+                super.onPostExecute(scores);
+            }
+        }
+        new AddScores().execute();
+
+        class AddTimes extends AsyncTask<Void, Void, List<TimeEntity>> {
+            @Override
+            protected List<TimeEntity> doInBackground(Void... voids) {
+                TimeEntity se = new TimeEntity();;
+                se.setTime(time);
+                se.setCardsCount(Option.getInstance(getApplicationContext()).getNbCartes());
+                LeaderboardDBClient
+                        .getInstance(getApplicationContext())
+                        .getAppDatabase()
+                        .leaderboardDao()
+                        .insert(se);
+                return null;
+            }
+            @Override
+            protected void onPostExecute(List<TimeEntity> times) {
+                super.onPostExecute(times);
+            }
+        }
+        new AddTimes().execute();
     }
 }
